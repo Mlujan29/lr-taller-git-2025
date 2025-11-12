@@ -1,12 +1,10 @@
 #Implementa un CLI que lea comandos desde stdin (uno por línea) hasta recibir FIN. El sistema debe mantener 
 # un inventario en memoria y un registro de ventas.
 
-def alta(lista,productos):
-    if len(lista) == 4:
-        productos[lista[1]] = {"descripcion": lista[2], "precio": lista[3], "stock": 0}
-        print(f"OK: {productos}")
-    else:
-        return print("Faltan datos para dar alta al producto")
+def alta(cod,descripcion,precio,productos):
+    productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
+    print(f"OK: ALTA {productos}")
+
 
 productos = {}
 
@@ -18,9 +16,15 @@ while True:
         partes = entrada.split()
         match partes[0].upper():
             case "ALTA":
-                alta(partes, productos)
+                if len(partes) == 4:
+                    cod = partes[1]
+                    descripcion = partes[2]
+                    precio =  partes[3]
+                    alta(cod,descripcion,precio, productos)
+                else:
+                    print("ERROR: Ingrese el formato correcto para dar alta al producto")
             case "STOCK":
-                print("aca va la funcion")
+                print("funcion")
             case "VENDE":
                 print("aca va la funcion")
             case "DEVUELVE":
