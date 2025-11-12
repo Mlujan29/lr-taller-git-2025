@@ -61,7 +61,8 @@ def reporte(movimientos, productos):
             elif mov["Tipo"] == "DEVOLUCION":
                 cantDevo += mov["Cantidad"]
                 montoDevo += mov["Monto"]
-        print(f"""{codigo}          {desc}              {precio}             {stock}
+        print(f"""{codigo}          {desc}         {precio}           {stock}
+
 Ventas:     unidades: {cantVenta}       monto: Gs {montoVenta}
 Devols:     unidades: {cantDevo}        monto: Gs {montoDevo}
 Neto: {montoVenta+montoDevo}
