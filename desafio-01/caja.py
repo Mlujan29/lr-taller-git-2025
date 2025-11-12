@@ -43,6 +43,31 @@ def devuelve(cod, cantidad, productos, movimientos):
         print("ERROR: El código ingresado no existe")
 
 
+def reporte(movimientos, productos):
+    print("--------------------------------------------------")
+    print(f"""CODIGO         DESCRIPCION         PRECIO          STOCK""")
+    for codigo, item in productos.items():
+        desc = item["descripcion"]
+        precio = item["precio"]
+        stock = item["stock"]
+        cantVenta = 0
+        cantDevo = 0
+        montoVenta = 0
+        montoDevo = 0
+        for mov in movimientos:
+            if mov["Tipo"] == "VENTA":
+                cantVenta += mov["Cantidad"]
+                montoVenta += mov["Monto"]
+            elif mov["Tipo"] == "DEVOLUCION":
+                cantDevo += mov["Cantidad"]
+                montoDevo += mov["Monto"]
+        print(f"""{codigo}          {desc}              {precio}             {stock}
+Ventas:     unidades: {cantVenta}       monto: Gs {montoVenta}
+Devols:     unidades: {cantDevo}        monto: Gs {montoDevo}
+Neto: {montoVenta+montoDevo}
+--------------------------------------------------""")
+
+
 #       MAIN
 productos = {}      # para uso general
 movimientos = []    # para las ventas y devoluciones
@@ -85,7 +110,7 @@ while True:
                 else:
                     print("ERROR: Ingrese el formato correcto para vender el producto")
             case "REPORTE":
-                print("aca va la funcion")
+                reporte(movimientos,productos)
             case "FIN":
                 print("Gracias por usar el programa! Adiós...")
                 break
