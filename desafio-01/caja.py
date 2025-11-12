@@ -1,8 +1,8 @@
 #Implementa un CLI que lea comandos desde stdin (uno por línea) hasta recibir FIN. El sistema debe mantener 
 # un inventario en memoria y un registro de ventas.
 
-#       FUNCIONES
 
+#       FUNCIONES
 def alta(cod,descripcion,precio,productos):
     productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
     print(f"OK: ALTA {productos}")
@@ -19,8 +19,23 @@ def stock(cod, cantidad, productos):
         print("ERROR: El código ingresado no existe")
 
 
+def vende(cod, cantidad, productos, movimientos):
+    if cod in productos:
+        if cantidad <= productos[cod]["stock"]:
+            monto = cantidad * productos[cod]["precio"]
+            print(f"OK: VENDE {cod} --> {cantidad} x {productos[cod]["precio"]} = {monto}")
+            productos[cod]["stock"] -= cantidad
+            movimientos.append({"Tipo": "VENTA", "Cod": cod, "Cantidad": cantidad, "Monto": monto})
+        else:
+            print("ERROR: No hay suficiente stock para la venta.")
+            print(f"Disponible: {productos[cod]["stock"]}")
+    else:
+        print("ERROR: El código ingresado no existe")
+
+
 #       MAIN
-productos = {}
+productos = {}      # para uso general
+movimientos = []    # para las ventas y devoluciones
 
 print("-------------------Caja de Kiosco-------------------")
 while True:
@@ -34,7 +49,7 @@ while True:
                 if len(partes) == 4:    #validación en caso de que no se ingrese en el formato correcto
                     cod = partes[1]
                     descripcion = partes[2]
-                    precio =  partes[3]
+                    precio =  int(partes[3])
                     alta(cod,descripcion,precio,productos)
                 else:
                     print("ERROR: Ingrese el formato correcto para dar alta al producto")
@@ -46,7 +61,12 @@ while True:
                 else:
                     print("ERROR: Ingrese el formato correcto para dar alta al producto")
             case "VENDE":
-                print("aca va la funcion")
+                if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
+                    cod = partes[1]
+                    cantidad = int(partes[2])
+                    vende(cod,cantidad,productos,movimientos)
+                else:
+                    print("ERROR: Ingrese el formato correcto para dar alta al producto")
             case "DEVUELVE":
                 print("aca va la funcion")
             case "REPORTE":
