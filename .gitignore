@@ -28,3 +28,8 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+#Recomendados
+__pycache__/
+*.pyc
+#guarda caché de python
