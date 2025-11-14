@@ -4,8 +4,19 @@
 
 #       FUNCIONES
 def alta(cod,descripcion,precio,productos):
-    productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
-    print(f"OK: ALTA {cod} - {descripcion}")
+    if cod in productos:                        #si el codigo ya existe (ya que debe de ser único)
+        print("ALERTA: El codigo ya existía ¿Desea sobrescribirlo? El Stock volverá a cero")
+        confirmación = input("[S/N]: ")         #guarda la respuesta
+        if confirmación.upper() == 'S' or confirmación.upper() == "SI":
+            productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
+            print(f"OK: ALTA {cod} - {descripcion}")
+        elif confirmación.upper() == 'N' or confirmación.upper() == "NO":       #si dice que no vuelve al comienzo
+            return
+        else:                   #si ingresa cualquier otra cosa
+            print("ERROR: La confirmación no fue válida")
+    else:
+        productos[cod] = {"descripcion": descripcion, "precio": precio, "stock": 0}
+        print(f"OK: ALTA {cod} - {descripcion}")
 
 
 def stock(cod, cantidad, productos):
@@ -45,7 +56,7 @@ def devuelve(cod, cantidad, productos, movimientos):
 
 def reporte(movimientos, productos):
     print("--------------------------------------------------")
-    print(f"{"CODIGO":<10} {"DESCRIPCION":<15} {"PRECIO":>10} {"STOCK":>7}")
+    print(f"{'CODIGO':<10} {'DESCRIPCION':<15} {'PRECIO':>10} {'STOCK':>7}")        #correción con comillas simples
     print("--------------------------------------------------")
     total = 0
     for codigo, item in productos.items():      #va a recorrer todos los productos que se dieron alta
@@ -96,46 +107,73 @@ while True:
                 if len(partes) == 4:    #validación en caso de que no se ingrese en el formato correcto
                     cod = partes[1]
                     descripcion = partes[2]
-                    precio =  int(partes[3])
-                    if precio <= 0:                     #para rechazar la accion si el precio es negaivo o cero
-                        print("ERROR: Ingrese un precio válido")
-                    else:
-                        alta(cod,descripcion,precio,productos)
+
+                    try:    #modificación
+                        precio =  int(partes[3])
+                        if precio <= 0:                     #para rechazar la accion si el precio es negaivo o cero
+                            print("ERROR: Ingrese un precio válido")
+                        else:
+                            alta(cod,descripcion,precio,productos)
+                    except ValueError:
+                        print("ERROR: El precio debe de ser un número")
+                
                 else:
                     print("ERROR: Ingrese el formato correcto para dar alta al producto")
+            
             case "STOCK":
                 if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
                     cod = partes[1]
-                    cantidad = int(partes[2])       #la cantidad si puede ser negativa, en caso de que algo le pase al stock ya definido
-                    stock(cod,cantidad,productos)
+                    
+                    try:    #modificación
+                        cantidad = int(partes[2])       #la cantidad si puede ser negativa, en caso de que algo le pase al stock ya definido
+                        stock(cod,cantidad,productos)
+                    except ValueError:
+                        print("ERROR: La cantidad debe de ser un número")
+                
                 else:
                     print("ERROR: Ingrese el formato correcto para dar stock al producto")
+            
             case "VENDE":
                 if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
                     cod = partes[1]
-                    cantidad = int(partes[2])
-                    if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
-                        print("ERROR: Ingrese una cantidad válida")
-                    else:
-                        vende(cod,cantidad,productos,movimientos)
+
+                    try:
+                        cantidad = int(partes[2])
+                        if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
+                            print("ERROR: Ingrese una cantidad válida")
+                        else:
+                            vende(cod,cantidad,productos,movimientos)
+                    except ValueError:
+                        print("ERROR: La cantidad debe de ser un número")
+
                 else:
                     print("ERROR: Ingrese el formato correcto para vender el producto")
+            
             case "DEVUELVE":
                 if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
                     cod = partes[1]
-                    cantidad = int(partes[2])
-                    if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
-                        print("ERROR: Ingrese una cantidad válida")
-                    else:
-                        devuelve(cod,cantidad,productos,movimientos)
+                    
+                    try:
+                        cantidad = int(partes[2])
+                        if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
+                            print("ERROR: Ingrese una cantidad válida")
+                        else:
+                            devuelve(cod,cantidad,productos,movimientos)
+                    except ValueError:
+                        print("ERROR: La cantidad debe de ser un número")
+                
                 else:
                     print("ERROR: Ingrese el formato correcto para devolver el producto")
+            
             case "REPORTE":
                 reporte(movimientos,productos)
+            
             case "FIN":
                 print("Gracias por usar el programa! Adiós...")
                 break
+            
             case _:                                                     #si se ingresa cualquier otra palabra
                 print("ERROR: Ingrese una entrada válida")
+    
     else:
         print("ERROR: No se ingresó nada")
