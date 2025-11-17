@@ -67,7 +67,18 @@ def cobrar(productos,promociones,movimientos,carrito):
     else:
         print("ERROR: No se ha vendido nada")
 
-        
+
+def devuelve(cod,cantidad,productos,movimientos):
+    if cod in productos:                            #verifica que el codigo ingresado exista
+        monto_perdido = cantidad * productos[cod]["precio"] * (-1)
+        print(f"OK: DEVUELVE {cod} --> {cantidad} x {productos[cod]["precio"]} = {monto_perdido}")
+        productos[cod]["stock"] += cantidad     #se agrega al stock
+        print(f"En Stock: {productos[cod]["stock"]}")
+
+        movimientos.append({"Tipo": "DEVOLUCION", "Cod": cod, "Cantidad": cantidad, "Monto": monto_perdido})
+    else:
+        print("ERROR: El código ingresado no existe")
+
 
 #   MAIN
 productos =  {}     # Donde se van a almacenar los productos
@@ -140,6 +151,7 @@ while True:
                         if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
                             print("ERROR: Ingrese una cantidad válida")
                         else:
+                            print("-------------------------------------------")
                             print("Para terminar ingrese: COBRAR")
                             vende(cod,cantidad,productos,carrito)
                     except ValueError:
@@ -153,7 +165,20 @@ while True:
                 carrito.clear()
 
             case "DEVUELVE":
-                print("la funcion")
+                if len(partes) == 3:    #validación en caso de que no se ingrese en el formato correcto
+                    cod = partes[1]
+                    
+                    try:
+                        cantidad = int(partes[2])
+                        if cantidad <= 0:                     #rechaza la accion si la cantidad es negativa o cero
+                            print("ERROR: Ingrese una cantidad válida")
+                        else:
+                            devuelve(cod,cantidad,productos,movimientos)
+                    except ValueError:
+                        print("ERROR: La cantidad debe de ser un número")
+                
+                else:
+                    print("ERROR: Ingrese el formato correcto para devolver el producto")
 
             case "PROMOS":
                 promos_activas()
