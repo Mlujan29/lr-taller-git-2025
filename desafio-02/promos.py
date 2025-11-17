@@ -18,4 +18,13 @@ def calcular_descuento(items_de_venta,productos,promociones):
                     descuento_total += sin_descuento * 0.10
 
         elif promo['tipo'] == "combo_fijo":
-            print("ver como hacer este")
+            codigos = []
+            i =  0
+            for (codigo,cantidad) in items_de_venta:
+                codigos[i] = codigo
+                i += 1
+            items_promocion = promo['productos']
+            if items_promocion[0] in codigos and items_promocion[1] in codigos:
+                descuento_total += promo['descuento']
+    
+    return int(descuento_total)
