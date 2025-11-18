@@ -37,10 +37,10 @@ def promos_activas():               # muestra las promociones
 
 def vende(cod, cantidad, productos, carrito):
     if cod in productos:
-        cant_total = carrito.get(cod, 0) + cantidad
-        if cant_total <= productos[cod]["stock"]:
+        cant_total = carrito.get(cod, 0) + cantidad     #en caso de que se repita el producto se suman las cantidades, si no existe el .get es 0
+        if cant_total <= productos[cod]["stock"]:    #solo acepta si hay suficiente inventario
             print(f"OK: VENDE {cod} --> {cantidad}")
-            carrito[cod] = cant_total
+            carrito[cod] = cant_total  #se guarda para cobrar con la cantidad total directamente
 
         else:
             print("ERROR: No hay suficiente stock para la venta.")
@@ -50,16 +50,16 @@ def vende(cod, cantidad, productos, carrito):
 
 
 def cobrar(productos,promociones,movimientos,carrito):
-    if carrito:
-        items_de_venta = list(carrito.items())
-        bruto_venta = 0
+    if carrito:     #si hay elementos en el carrito
+        items_de_venta = list(carrito.items())      #agregamos los elementos
+        bruto_venta = 0     #acumulador
         for (cod,cantidad) in items_de_venta:
             bruto_venta += productos[cod]['precio'] * cantidad
         
-        descuento = promos.calcular_descuento(items_de_venta,productos,promociones)
+        descuento = promos.calcular_descuento(items_de_venta,productos,promociones)     #llamamos al archivo para  que calcule el descuento de la venta
         total = bruto_venta - descuento
 
-        for (cod, cantidad) in items_de_venta:
+        for (cod, cantidad) in items_de_venta:             #restamos la cantidad del inventario
             productos[cod]['stock'] -= cantidad
         
         print("La venta fue realizada con exito!")
@@ -85,7 +85,7 @@ def reporte(productos,movimientos):
     print("----------------------------REPORTE GENERAL----------------------------")
     if productos:
         print("\n--------------------  INVENTARIO --------------------")
-        for item in productos:
+        for item in productos:      #recorre el diccionario y va mostrando
             print(f"- {item} : {productos[item]}")
         print("-----------------------------------------------------")
     else:
@@ -102,16 +102,16 @@ def reporte(productos,movimientos):
             total_bruto += mov['Bruto']
             total_descuentos += mov['Descuento']
 
-            for codigo, cantidad in mov['items']:
+            for codigo, cantidad in mov['items']:       #se analizan todas las ventas en general
                 if codigo in ventas:
-                    ventas[codigo] += cantidad
+                    ventas[codigo] += cantidad        #sumamos la nueva cantidad si es que ya existió una venta
                 else:
-                    ventas[codigo] = cantidad
+                    ventas[codigo] = cantidad       #si no existe le asignamos la cantidad
 
         elif mov['Tipo'] == 'DEVOLUCION':
             total_devoluciones += mov['Monto']
 
-    monto_neto = total_bruto - total_descuentos - total_devoluciones
+    monto_neto = total_bruto - total_descuentos - total_devoluciones    #calculamos el total final
 
     print("\nTOTALES:")
     print(f"Ventas Brutas:   {total_bruto:>10} Gs")
@@ -121,17 +121,22 @@ def reporte(productos,movimientos):
     print(f"MONTO NETO:      {monto_neto:>10} Gs")
 
     #   Para el top 3
-    lista_invertida = []
+    lista_invertida = []    #donde vamos a guardar las cantidades
     for (codigo, cantidad) in ventas.items():
-        lista_invertida.append((cantidad,codigo))
-    lista_invertida.sort(reverse= True)
+        lista_invertida.append((cantidad,codigo))   #ponemos primero a cantidad para poder ordenar en basea eso más adelante
+    
+    lista_invertida.sort(reverse= True)     #ordenamos la lista de forma descendente
 
-    top3 = lista_invertida[:3]
+    top3 = lista_invertida[:3]  #guardamos los primeros 3
 
-    if top3:
+    if top3:    #si existen elementos
+        
         print(f"\nLos 3 productos más vendidos son:")
-        for i, (cantidad, codigo) in enumerate(top3):
+        for i, (cantidad, codigo) in enumerate(top3):       #recorre para mostrar el resultado
             print(f"Top {i+1}: {codigo} - {cantidad} unidades")
+    
+    else:       #si no existen elementos
+        print("No se realizó ninguna venta")
     
     print("\n--- FIN REPORTE ---")
 
